@@ -48,6 +48,11 @@ service cloud.firestore {
       match /sections/{sectionId} {
         allow read, create, delete: if request.auth != null
           && request.auth.uid in get(/databases/$(database)/documents/houses/$(houseId)).data.memberIds;
+
+        // Any member may configure or clear a section's cleaning schedule.
+        allow update: if request.auth != null
+          && request.auth.uid in get(/databases/$(database)/documents/houses/$(houseId)).data.memberIds
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['cleaning']);
       }
     }
 

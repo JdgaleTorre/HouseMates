@@ -3,6 +3,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { ActivityIndicator, View } from 'react-native';
 
 import { useAuth } from '../context/AuthContext';
+import CleaningConfigScreen from '../screens/CleaningConfigScreen';
+import CleaningScreen from '../screens/CleaningScreen';
 import CreateHouseScreen from '../screens/CreateHouseScreen';
 import HouseDashboardScreen from '../screens/HouseDashboardScreen';
 import HousesScreen from '../screens/HousesScreen';
@@ -44,6 +46,12 @@ export default function RootNavigator() {
             <Stack.Screen name="NeedsList" component={NeedsListScreen} options={{ title: 'Needs list' }} />
             <Stack.Screen name="Members" component={MembersScreen} options={{ title: 'Members' }} />
             <Stack.Screen name="Sections" component={SectionsScreen} options={{ title: 'Sections' }} />
+            <Stack.Screen name="Cleaning" component={CleaningScreen} options={{ title: 'Cleaning' }} />
+            <Stack.Screen
+              name="CleaningConfig"
+              component={CleaningConfigScreen}
+              options={{ title: 'Configure cleaning' }}
+            />
           </>
         )}
       </Stack.Navigator>

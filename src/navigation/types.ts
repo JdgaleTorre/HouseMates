@@ -7,4 +7,6 @@ export type RootStackParamList = {
   NeedsList: { houseId: string };
   Members: { houseId: string };
   Sections: { houseId: string };
+  Cleaning: { houseId: string };
+  CleaningConfig: { houseId: string; sectionId: string };
 };

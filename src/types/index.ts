@@ -31,9 +31,18 @@ export interface NeedsItem {
   urgent: boolean;
 }
 
+export type CleaningFrequency = 'weekly' | 'biweekly' | 'monthly';
+
+export interface CleaningSchedule {
+  assignedMemberIds: string[];
+  frequency: CleaningFrequency;
+  anchorAt: number;
+}
+
 export interface Section {
   id: string;
   name: string;
   createdBy: string;
   createdAt: number;
+  cleaning: CleaningSchedule | null;
 }

@@ -25,6 +25,7 @@ export function useSections(houseId: string | null) {
             name: data.name,
             createdBy: data.createdBy,
             createdAt: data.createdAt?.toMillis?.() ?? 0,
+            cleaning: data.cleaning ?? null,
           };
         })
       );

@@ -5,9 +5,11 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import InviteCodeBanner from '../components/InviteCodeBanner';
 import MenuRow from '../components/MenuRow';
+import MyCleaningSummary from '../components/MyCleaningSummary';
 import { useAuth } from '../context/AuthContext';
 import { refreshMemberProfile } from '../firebase/houses';
 import { useHouse } from '../hooks/useHouse';
+import { useSections } from '../hooks/useSections';
 import { RootStackParamList } from '../navigation/types';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'HouseDashboard'>;
@@ -16,6 +18,7 @@ export default function HouseDashboardScreen({ route, navigation }: Props) {
   const { houseId } = route.params;
   const { user } = useAuth();
   const { house, loading } = useHouse(houseId);
+  const { sections } = useSections(houseId);
 
   useEffect(() => {
     if (house) {
@@ -32,7 +35,7 @@ export default function HouseDashboardScreen({ route, navigation }: Props) {
     }
   }, [house, user, houseId]);
 
-  if (loading || !house) {
+  if (loading || !house || !user) {
     return (
       <View className="flex-1 items-center justify-center bg-white">
         <ActivityIndicator size="large" />
@@ -44,6 +47,7 @@ export default function HouseDashboardScreen({ route, navigation }: Props) {
     <SafeAreaView edges={['bottom']} className="flex-1 bg-white">
       <View className="flex-1 gap-4 px-6 pt-4">
         <InviteCodeBanner houseName={house.name} inviteCode={house.inviteCode} />
+        <MyCleaningSummary sections={sections} userUid={user.uid} />
         <View className="gap-3">
           <MenuRow
             label="Needs List"
@@ -59,6 +63,11 @@ export default function HouseDashboardScreen({ route, navigation }: Props) {
             label="Sections"
             icon="grid-outline"
             onPress={() => navigation.navigate('Sections', { houseId })}
+          />
+          <MenuRow
+            label="Cleaning"
+            icon="sparkles-outline"
+            onPress={() => navigation.navigate('Cleaning', { houseId })}
           />
         </View>
       </View>
