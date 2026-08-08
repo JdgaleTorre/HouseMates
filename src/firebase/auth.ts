@@ -1,7 +1,18 @@
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
-import { GoogleAuthProvider, onAuthStateChanged, signInWithCredential, signOut as firebaseSignOut, type User } from 'firebase/auth';
+import {
+  GoogleAuthProvider,
+  createUserWithEmailAndPassword,
+  onAuthStateChanged,
+  sendPasswordResetEmail,
+  signInWithCredential,
+  signInWithEmailAndPassword,
+  signOut as firebaseSignOut,
+  updateProfile,
+  type User,
+} from 'firebase/auth';
 
 import { auth } from './config';
+import { ensureUserProfile } from './users';
 
 GoogleSignin.configure({
   webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
@@ -23,7 +34,63 @@ export async function signInWithGoogle() {
   await signInWithCredential(auth, credential);
 }
 
+function friendlyAuthErrorMessage(err: unknown): string {
+  const code = (err as { code?: string })?.code;
+  switch (code) {
+    case 'auth/email-already-in-use':
+      return 'An account with this email already exists. Try signing in instead.';
+    case 'auth/invalid-email':
+      return "That email address doesn't look right.";
+    case 'auth/weak-password':
+      return 'Password should be at least 6 characters.';
+    case 'auth/invalid-credential':
+      return 'Incorrect email or password.';
+    case 'auth/too-many-requests':
+      return 'Too many attempts. Please wait a moment and try again.';
+    default:
+      return err instanceof Error ? err.message : 'Something went wrong, please try again.';
+  }
+}
+
+export async function signInWithEmail(email: string, password: string) {
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+  } catch (err) {
+    throw new Error(friendlyAuthErrorMessage(err));
+  }
+}
+
+export async function signUpWithEmail(email: string, password: string, displayName: string) {
+  try {
+    const credential = await createUserWithEmailAndPassword(auth, email, password);
+    // updateProfile mutates credential.user.displayName in place once it resolves,
+    // so the explicit ensureUserProfile call below is guaranteed to see the real
+    // name regardless of whether onAuthStateChanged's own auto-triggered
+    // ensureUserProfile call (fired by createUserWithEmailAndPassword) already
+    // ran with displayName still null.
+    await updateProfile(credential.user, { displayName });
+    await ensureUserProfile(credential.user);
+  } catch (err) {
+    throw new Error(friendlyAuthErrorMessage(err));
+  }
+}
+
+export async function resetPassword(email: string) {
+  try {
+    await sendPasswordResetEmail(auth, email);
+  } catch (err) {
+    throw new Error(friendlyAuthErrorMessage(err));
+  }
+}
+
 export async function signOut() {
-  await GoogleSignin.signOut();
+  // Best-effort: clears the native Google session cache if there was one.
+  // Must not block the Firebase sign-out below for users who never signed
+  // in with Google in the first place (e.g. email/password users).
+  try {
+    await GoogleSignin.signOut();
+  } catch {
+    // ignore -- no Google session to clear
+  }
   await firebaseSignOut(auth);
 }

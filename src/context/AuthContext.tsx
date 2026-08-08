@@ -1,7 +1,14 @@
 import type { User } from 'firebase/auth';
 import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 
-import { signInWithGoogle, signOut, subscribeToAuthChanges } from '../firebase/auth';
+import {
+  resetPassword,
+  signInWithEmail,
+  signInWithGoogle,
+  signOut,
+  signUpWithEmail,
+  subscribeToAuthChanges,
+} from '../firebase/auth';
 import { ensureUserProfile } from '../firebase/users';
 
 interface AuthContextValue {
@@ -9,7 +16,12 @@ interface AuthContextValue {
   loading: boolean;
   signingIn: boolean;
   signInError: string | null;
+  resetEmailSent: boolean;
   signInWithGoogle: () => Promise<void>;
+  signInWithEmail: (email: string, password: string) => Promise<void>;
+  signUpWithEmail: (email: string, password: string, displayName: string) => Promise<void>;
+  resetPassword: (email: string) => Promise<void>;
+  clearSignInError: () => void;
   signOut: () => Promise<void>;
 }
 
@@ -18,7 +30,12 @@ const AuthContext = createContext<AuthContextValue>({
   loading: true,
   signingIn: false,
   signInError: null,
+  resetEmailSent: false,
   signInWithGoogle: async () => {},
+  signInWithEmail: async () => {},
+  signUpWithEmail: async () => {},
+  resetPassword: async () => {},
+  clearSignInError: () => {},
   signOut: async () => {},
 });
 
@@ -27,6 +44,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [signingIn, setSigningIn] = useState(false);
   const [signInError, setSignInError] = useState<string | null>(null);
+  const [resetEmailSent, setResetEmailSent] = useState(false);
 
   useEffect(() => {
     const unsubscribe = subscribeToAuthChanges(async (nextUser) => {
@@ -39,11 +57,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return unsubscribe;
   }, []);
 
-  async function handleSignIn() {
+  async function runAuthAction(action: () => Promise<void>) {
     setSigningIn(true);
     setSignInError(null);
+    setResetEmailSent(false);
     try {
-      await signInWithGoogle();
+      await action();
     } catch (err) {
       setSignInError(err instanceof Error ? err.message : 'Could not sign in, please try again.');
     } finally {
@@ -51,9 +70,52 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }
 
+  function handleSignInWithGoogle() {
+    return runAuthAction(signInWithGoogle);
+  }
+
+  function handleSignInWithEmail(email: string, password: string) {
+    return runAuthAction(() => signInWithEmail(email, password));
+  }
+
+  function handleSignUpWithEmail(email: string, password: string, displayName: string) {
+    return runAuthAction(() => signUpWithEmail(email, password, displayName));
+  }
+
+  async function handleResetPassword(email: string) {
+    setSigningIn(true);
+    setSignInError(null);
+    setResetEmailSent(false);
+    try {
+      await resetPassword(email);
+      setResetEmailSent(true);
+    } catch (err) {
+      setSignInError(err instanceof Error ? err.message : 'Could not send reset email, please try again.');
+    } finally {
+      setSigningIn(false);
+    }
+  }
+
+  function clearSignInError() {
+    setSignInError(null);
+    setResetEmailSent(false);
+  }
+
   return (
     <AuthContext.Provider
-      value={{ user, loading, signingIn, signInError, signInWithGoogle: handleSignIn, signOut }}
+      value={{
+        user,
+        loading,
+        signingIn,
+        signInError,
+        resetEmailSent,
+        signInWithGoogle: handleSignInWithGoogle,
+        signInWithEmail: handleSignInWithEmail,
+        signUpWithEmail: handleSignUpWithEmail,
+        resetPassword: handleResetPassword,
+        clearSignInError,
+        signOut,
+      }}
     >
       {children}
     </AuthContext.Provider>
