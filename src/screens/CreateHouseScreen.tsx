@@ -20,8 +20,11 @@ export default function CreateHouseScreen({ navigation }: Props) {
     setSubmitting(true);
     setError(null);
     try {
-      const { houseId } = await createHouse(name.trim(), user.uid);
-      navigation.replace('NeedsList', { houseId });
+      const { houseId } = await createHouse(name.trim(), user.uid, {
+        displayName: user.displayName,
+        photoURL: user.photoURL,
+      });
+      navigation.replace('HouseDashboard', { houseId });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong, please try again.');
       setSubmitting(false);

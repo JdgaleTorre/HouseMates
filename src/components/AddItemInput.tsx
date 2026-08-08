@@ -3,9 +3,10 @@ import { Pressable, Text, TextInput, View } from 'react-native';
 
 interface AddItemInputProps {
   onSubmit: (name: string) => void;
+  placeholder?: string;
 }
 
-export default function AddItemInput({ onSubmit }: AddItemInputProps) {
+export default function AddItemInput({ onSubmit, placeholder = 'What does the house need?' }: AddItemInputProps) {
   const [name, setName] = useState('');
 
   function handleSubmit() {
@@ -20,7 +21,7 @@ export default function AddItemInput({ onSubmit }: AddItemInputProps) {
       <TextInput
         value={name}
         onChangeText={setName}
-        placeholder="What does the house need?"
+        placeholder={placeholder}
         onSubmitEditing={handleSubmit}
         returnKeyType="done"
         className="flex-1 rounded-xl border border-slate-300 px-4 py-3 text-base"

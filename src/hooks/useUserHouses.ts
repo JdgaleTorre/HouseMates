@@ -25,6 +25,7 @@ export function useUserHouses(uid: string | null) {
           inviteCode: data.inviteCode,
           createdBy: data.createdBy,
           memberIds: data.memberIds ?? [],
+          memberProfiles: data.memberProfiles ?? {},
           createdAt: data.createdAt?.toMillis?.() ?? 0,
         };
       });

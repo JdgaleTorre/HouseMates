@@ -28,6 +28,7 @@ export function useHouse(houseId: string | null) {
         inviteCode: data.inviteCode,
         createdBy: data.createdBy,
         memberIds: data.memberIds ?? [],
+        memberProfiles: data.memberProfiles ?? {},
         createdAt: data.createdAt?.toMillis?.() ?? 0,
       });
       setLoading(false);

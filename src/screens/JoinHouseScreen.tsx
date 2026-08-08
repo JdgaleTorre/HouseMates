@@ -20,8 +20,11 @@ export default function JoinHouseScreen({ navigation }: Props) {
     setSubmitting(true);
     setError(null);
     try {
-      const houseId = await joinHouseByCode(code.trim(), user.uid);
-      navigation.replace('NeedsList', { houseId });
+      const houseId = await joinHouseByCode(code.trim(), user.uid, {
+        displayName: user.displayName,
+        photoURL: user.photoURL,
+      });
+      navigation.replace('HouseDashboard', { houseId });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong, please try again.');
       setSubmitting(false);

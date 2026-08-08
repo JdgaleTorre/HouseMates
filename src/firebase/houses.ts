@@ -1,6 +1,8 @@
 import {
+  arrayRemove,
   arrayUnion,
   collection,
+  deleteField,
   doc,
   getDoc,
   runTransaction,
@@ -9,13 +11,18 @@ import {
 } from 'firebase/firestore';
 
 import { db } from './config';
+import { MemberProfile } from '../types';
 import { generateInviteCode } from '../utils/inviteCode';
 
 const MAX_CODE_ATTEMPTS = 5;
 
 class InviteCodeCollisionError extends Error {}
 
-export async function createHouse(name: string, uid: string): Promise<{ houseId: string; inviteCode: string }> {
+export async function createHouse(
+  name: string,
+  uid: string,
+  profile: MemberProfile
+): Promise<{ houseId: string; inviteCode: string }> {
   for (let attempt = 0; attempt < MAX_CODE_ATTEMPTS; attempt++) {
     const inviteCode = generateInviteCode();
     try {
@@ -32,6 +39,7 @@ export async function createHouse(name: string, uid: string): Promise<{ houseId:
           inviteCode,
           createdBy: uid,
           memberIds: [uid],
+          memberProfiles: { [uid]: profile },
           createdAt: serverTimestamp(),
         });
         tx.set(inviteCodeRef, { houseId: houseRef.id });
@@ -49,13 +57,29 @@ export async function createHouse(name: string, uid: string): Promise<{ houseId:
   throw new Error('Could not generate a unique invite code, please try again.');
 }
 
-export async function joinHouseByCode(code: string, uid: string): Promise<string> {
+export async function joinHouseByCode(code: string, uid: string, profile: MemberProfile): Promise<string> {
   const inviteCodeSnap = await getDoc(doc(db, 'inviteCodes', code.trim().toUpperCase()));
   if (!inviteCodeSnap.exists()) {
     throw new Error('That invite code was not found.');
   }
 
   const { houseId } = inviteCodeSnap.data() as { houseId: string };
-  await updateDoc(doc(db, 'houses', houseId), { memberIds: arrayUnion(uid) });
+  await updateDoc(doc(db, 'houses', houseId), {
+    memberIds: arrayUnion(uid),
+    [`memberProfiles.${uid}`]: profile,
+  });
   return houseId;
+}
+
+export function removeMember(houseId: string, targetUid: string) {
+  return updateDoc(doc(db, 'houses', houseId), {
+    memberIds: arrayRemove(targetUid),
+    [`memberProfiles.${targetUid}`]: deleteField(),
+  });
+}
+
+export function refreshMemberProfile(houseId: string, uid: string, profile: MemberProfile) {
+  return updateDoc(doc(db, 'houses', houseId), {
+    [`memberProfiles.${uid}`]: profile,
+  });
 }

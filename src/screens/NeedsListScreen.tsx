@@ -1,10 +1,8 @@
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { useEffect } from 'react';
 import { ActivityIndicator, FlatList, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import AddItemInput from '../components/AddItemInput';
-import InviteCodeBanner from '../components/InviteCodeBanner';
 import ItemRow from '../components/ItemRow';
 import { useAuth } from '../context/AuthContext';
 import { addItem, markItemBought } from '../firebase/items';
@@ -14,17 +12,11 @@ import { RootStackParamList } from '../navigation/types';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'NeedsList'>;
 
-export default function NeedsListScreen({ route, navigation }: Props) {
+export default function NeedsListScreen({ route }: Props) {
   const { houseId } = route.params;
   const { user } = useAuth();
   const { house, loading: houseLoading } = useHouse(houseId);
   const { items, loading: itemsLoading } = useNeedsList(houseId);
-
-  useEffect(() => {
-    if (house) {
-      navigation.setOptions({ title: house.name });
-    }
-  }, [navigation, house]);
 
   if (houseLoading || !house || !user) {
     return (
@@ -46,7 +38,6 @@ export default function NeedsListScreen({ route, navigation }: Props) {
   return (
     <SafeAreaView edges={['bottom']} className="flex-1 bg-white">
       <View className="flex-1 gap-4 px-6 pt-4">
-        <InviteCodeBanner houseName={house.name} inviteCode={house.inviteCode} />
         <AddItemInput onSubmit={handleAddItem} />
         {itemsLoading ? (
           <ActivityIndicator />

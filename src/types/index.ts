@@ -6,12 +6,18 @@ export interface UserProfile {
   createdAt: number;
 }
 
+export interface MemberProfile {
+  displayName: string | null;
+  photoURL: string | null;
+}
+
 export interface House {
   id: string;
   name: string;
   inviteCode: string;
   createdBy: string;
   memberIds: string[];
+  memberProfiles: Record<string, MemberProfile>;
   createdAt: number;
 }
 
@@ -20,5 +26,12 @@ export interface NeedsItem {
   name: string;
   createdBy: string;
   createdByName: string;
+  createdAt: number;
+}
+
+export interface Section {
+  id: string;
+  name: string;
+  createdBy: string;
   createdAt: number;
 }

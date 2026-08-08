@@ -29,7 +29,7 @@ export default function HousesScreen({ navigation }: Props) {
   }, [navigation, signOut]);
 
   function renderHouse({ item }: { item: House }) {
-    return <HouseCard house={item} onPress={() => navigation.navigate('NeedsList', { houseId: item.id })} />;
+    return <HouseCard house={item} onPress={() => navigation.navigate('HouseDashboard', { houseId: item.id })} />;
   }
 
   return (
