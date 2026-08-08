@@ -27,6 +27,8 @@ export interface NeedsItem {
   createdBy: string;
   createdByName: string;
   createdAt: number;
+  bought: boolean;
+  urgent: boolean;
 }
 
 export interface Section {
