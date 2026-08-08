@@ -32,7 +32,6 @@ export function subscribeToUserProfile(
       displayName: data.displayName ?? null,
       email: data.email ?? null,
       photoURL: data.photoURL ?? null,
-      currentHouseId: data.currentHouseId ?? null,
       createdAt: data.createdAt?.toMillis?.() ?? 0,
     });
   });

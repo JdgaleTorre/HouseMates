@@ -3,7 +3,6 @@ export interface UserProfile {
   displayName: string | null;
   email: string | null;
   photoURL: string | null;
-  currentHouseId: string | null;
   createdAt: number;
 }
 

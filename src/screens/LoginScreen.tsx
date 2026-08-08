@@ -1,4 +1,5 @@
-import { Text, View } from 'react-native';
+import { Image, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import PrimaryButton from '../components/PrimaryButton';
 import { useAuth } from '../context/AuthContext';
@@ -9,15 +10,22 @@ export default function LoginScreen() {
   const { signInWithGoogle, signingIn, signInError } = useAuth();
 
   return (
-    <View className="flex-1 items-center justify-center gap-4 bg-white px-6">
-      <Text className="mb-2 text-2xl font-bold text-slate-900">HouseMates</Text>
-      <Text className="mb-4 text-center text-slate-500">Sign in to see what your house needs.</Text>
-      {signInError ? <Text className="text-center text-red-600">{signInError}</Text> : null}
-      <PrimaryButton
-        label={signingIn ? 'Signing in…' : 'Continue with Google'}
-        onPress={signInWithGoogle}
-        disabled={signingIn}
-      />
-    </View>
+    <SafeAreaView edges={['top', 'bottom']} className="flex-1 bg-white">
+      <View className="flex-1 items-center justify-center gap-4 px-6">
+        <Image
+          source={require('../../assets/icon.png')}
+          className="h-24 w-24 rounded-3xl"
+          resizeMode="cover"
+        />
+        <Text className="text-2xl font-bold text-slate-900">HouseMates</Text>
+        <Text className="text-center text-slate-500">Sign in to see what your house needs.</Text>
+        {signInError ? <Text className="text-center text-red-600">{signInError}</Text> : null}
+        <PrimaryButton
+          label={signingIn ? 'Signing in…' : 'Continue with Google'}
+          onPress={signInWithGoogle}
+          disabled={signingIn}
+        />
+      </View>
+    </SafeAreaView>
   );
 }

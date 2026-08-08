@@ -1,20 +1,30 @@
-import { ActivityIndicator, FlatList, Pressable, Text, View } from 'react-native';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useEffect } from 'react';
+import { ActivityIndicator, FlatList, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import AddItemInput from '../components/AddItemInput';
 import InviteCodeBanner from '../components/InviteCodeBanner';
 import ItemRow from '../components/ItemRow';
 import { useAuth } from '../context/AuthContext';
-import { useHouseContext } from '../context/HouseContext';
 import { addItem, markItemBought } from '../firebase/items';
 import { useHouse } from '../hooks/useHouse';
 import { useNeedsList } from '../hooks/useNeedsList';
+import { RootStackParamList } from '../navigation/types';
 
-export default function NeedsListScreen() {
-  const { user, signOut } = useAuth();
-  const { currentHouseId } = useHouseContext();
-  const { house, loading: houseLoading } = useHouse(currentHouseId);
-  const { items, loading: itemsLoading } = useNeedsList(currentHouseId);
+type Props = NativeStackScreenProps<RootStackParamList, 'NeedsList'>;
+
+export default function NeedsListScreen({ route, navigation }: Props) {
+  const { houseId } = route.params;
+  const { user } = useAuth();
+  const { house, loading: houseLoading } = useHouse(houseId);
+  const { items, loading: itemsLoading } = useNeedsList(houseId);
+
+  useEffect(() => {
+    if (house) {
+      navigation.setOptions({ title: house.name });
+    }
+  }, [navigation, house]);
 
   if (houseLoading || !house || !user) {
     return (
@@ -36,12 +46,6 @@ export default function NeedsListScreen() {
   return (
     <SafeAreaView edges={['bottom']} className="flex-1 bg-white">
       <View className="flex-1 gap-4 px-6 pt-4">
-        <View className="flex-row items-center justify-between">
-          <Text className="text-2xl font-bold text-slate-900">{house.name}</Text>
-          <Pressable onPress={signOut}>
-            <Text className="font-semibold text-slate-400">Sign out</Text>
-          </Pressable>
-        </View>
         <InviteCodeBanner houseName={house.name} inviteCode={house.inviteCode} />
         <AddItemInput onSubmit={handleAddItem} />
         {itemsLoading ? (

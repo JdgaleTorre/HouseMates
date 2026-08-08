@@ -5,7 +5,6 @@ import {
   getDoc,
   runTransaction,
   serverTimestamp,
-  setDoc,
   updateDoc,
 } from 'firebase/firestore';
 
@@ -39,7 +38,6 @@ export async function createHouse(name: string, uid: string): Promise<{ houseId:
         return houseRef.id;
       });
 
-      await setDoc(doc(db, 'users', uid), { currentHouseId: houseId }, { merge: true });
       return { houseId, inviteCode };
     } catch (error) {
       if (error instanceof InviteCodeCollisionError) {
@@ -59,6 +57,5 @@ export async function joinHouseByCode(code: string, uid: string): Promise<string
 
   const { houseId } = inviteCodeSnap.data() as { houseId: string };
   await updateDoc(doc(db, 'houses', houseId), { memberIds: arrayUnion(uid) });
-  await setDoc(doc(db, 'users', uid), { currentHouseId: houseId }, { merge: true });
   return houseId;
 }

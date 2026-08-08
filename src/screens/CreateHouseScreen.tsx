@@ -1,11 +1,15 @@
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useState } from 'react';
 import { Text, TextInput, View } from 'react-native';
 
 import PrimaryButton from '../components/PrimaryButton';
 import { useAuth } from '../context/AuthContext';
 import { createHouse } from '../firebase/houses';
+import { RootStackParamList } from '../navigation/types';
 
-export default function CreateHouseScreen() {
+type Props = NativeStackScreenProps<RootStackParamList, 'CreateHouse'>;
+
+export default function CreateHouseScreen({ navigation }: Props) {
   const { user } = useAuth();
   const [name, setName] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -16,9 +20,8 @@ export default function CreateHouseScreen() {
     setSubmitting(true);
     setError(null);
     try {
-      await createHouse(name.trim(), user.uid);
-      // HouseContext's listener picks up the new currentHouseId and RootNavigator
-      // switches to the needs list automatically -- no manual navigation here.
+      const { houseId } = await createHouse(name.trim(), user.uid);
+      navigation.replace('NeedsList', { houseId });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong, please try again.');
       setSubmitting(false);
