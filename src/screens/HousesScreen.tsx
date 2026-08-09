@@ -1,9 +1,10 @@
 import { Ionicons } from '@expo/vector-icons';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, Pressable, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import AccountMenu from '../components/AccountMenu';
 import HouseActionTile from '../components/HouseActionTile';
 import HouseCard from '../components/HouseCard';
 import { useAuth } from '../context/AuthContext';
@@ -16,17 +17,17 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Houses'>;
 export default function HousesScreen({ navigation }: Props) {
   const { user, signOut } = useAuth();
   const { houses, loading } = useUserHouses(user?.uid ?? null);
+  const [menuVisible, setMenuVisible] = useState(false);
 
   useEffect(() => {
     navigation.setOptions({
-      headerRight: () => (
-        <Pressable onPress={signOut} hitSlop={8} className="flex-row items-center gap-1">
-          <Ionicons name="log-out-outline" size={18} color="#94a3b8" />
-          <Text className="text-base font-semibold text-slate-400">Sign out</Text>
+      headerLeft: () => (
+        <Pressable onPress={() => setMenuVisible(true)} hitSlop={8}>
+          <Ionicons name="menu-outline" size={24} color="#0f172a" />
         </Pressable>
       ),
     });
-  }, [navigation, signOut]);
+  }, [navigation]);
 
   function renderHouse({ item }: { item: House }) {
     return <HouseCard house={item} onPress={() => navigation.navigate('HouseDashboard', { houseId: item.id })} />;
@@ -69,6 +70,15 @@ export default function HousesScreen({ navigation }: Props) {
           />
         )}
       </View>
+
+      <AccountMenu
+        visible={menuVisible}
+        onClose={() => setMenuVisible(false)}
+        profile={{ displayName: user?.displayName ?? null, photoURL: user?.photoURL ?? null }}
+        email={user?.email ?? null}
+        onEditProfile={() => navigation.navigate('EditProfile')}
+        onSignOut={signOut}
+      />
     </SafeAreaView>
   );
 }

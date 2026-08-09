@@ -1,5 +1,5 @@
 import type { User } from 'firebase/auth';
-import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
+import { createContext, ReactNode, useContext, useEffect, useReducer, useState } from 'react';
 
 import {
   resetPassword,
@@ -23,6 +23,7 @@ interface AuthContextValue {
   resetPassword: (email: string) => Promise<void>;
   clearSignInError: () => void;
   signOut: () => Promise<void>;
+  refreshUser: () => void;
 }
 
 const AuthContext = createContext<AuthContextValue>({
@@ -37,6 +38,7 @@ const AuthContext = createContext<AuthContextValue>({
   resetPassword: async () => {},
   clearSignInError: () => {},
   signOut: async () => {},
+  refreshUser: () => {},
 });
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -45,6 +47,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [signingIn, setSigningIn] = useState(false);
   const [signInError, setSignInError] = useState<string | null>(null);
   const [resetEmailSent, setResetEmailSent] = useState(false);
+  const [, bumpUser] = useReducer((c) => c + 1, 0);
 
   useEffect(() => {
     const unsubscribe = subscribeToAuthChanges(async (nextUser) => {
@@ -101,6 +104,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setResetEmailSent(false);
   }
 
+  function refreshUser() {
+    bumpUser();
+  }
+
   return (
     <AuthContext.Provider
       value={{
@@ -115,6 +122,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         resetPassword: handleResetPassword,
         clearSignInError,
         signOut,
+        refreshUser,
       }}
     >
       {children}

@@ -6,6 +6,7 @@ import { useAuth } from '../context/AuthContext';
 import CleaningConfigScreen from '../screens/CleaningConfigScreen';
 import CleaningScreen from '../screens/CleaningScreen';
 import CreateHouseScreen from '../screens/CreateHouseScreen';
+import EditProfileScreen from '../screens/EditProfileScreen';
 import HouseDashboardScreen from '../screens/HouseDashboardScreen';
 import HousesScreen from '../screens/HousesScreen';
 import JoinHouseScreen from '../screens/JoinHouseScreen';
@@ -40,6 +41,7 @@ export default function RootNavigator() {
         ) : (
           <>
             <Stack.Screen name="Houses" component={HousesScreen} />
+            <Stack.Screen name="EditProfile" component={EditProfileScreen} options={{ title: 'Edit profile' }} />
             <Stack.Screen name="CreateHouse" component={CreateHouseScreen} options={{ title: 'Create house' }} />
             <Stack.Screen name="JoinHouse" component={JoinHouseScreen} options={{ title: 'Join house' }} />
             <Stack.Screen name="HouseDashboard" component={HouseDashboardScreen} />

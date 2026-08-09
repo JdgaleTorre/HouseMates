@@ -1,6 +1,7 @@
 export type RootStackParamList = {
   Login: undefined;
   Houses: undefined;
+  EditProfile: undefined;
   CreateHouse: undefined;
   JoinHouse: undefined;
   HouseDashboard: { houseId: string };

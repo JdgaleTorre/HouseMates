@@ -75,6 +75,17 @@ export async function signUpWithEmail(email: string, password: string, displayNa
   }
 }
 
+export async function updateUserDisplayInfo(
+  user: User,
+  updates: { displayName?: string | null; photoURL?: string | null }
+) {
+  try {
+    await updateProfile(user, updates);
+  } catch (err) {
+    throw new Error(friendlyAuthErrorMessage(err));
+  }
+}
+
 export async function resetPassword(email: string) {
   try {
     await sendPasswordResetEmail(auth, email);
