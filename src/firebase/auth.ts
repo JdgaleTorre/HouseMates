@@ -6,17 +6,23 @@ import {
   sendPasswordResetEmail,
   signInWithCredential,
   signInWithEmailAndPassword,
+  signInWithPopup,
   signOut as firebaseSignOut,
   updateProfile,
   type User,
 } from 'firebase/auth';
+import { Platform } from 'react-native';
 
 import { auth } from './config';
 import { ensureUserProfile } from './users';
 
-GoogleSignin.configure({
-  webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
-});
+// The native Google Sign-In SDK has no web implementation; only configure/use
+// it off-web and use Firebase's browser-based popup flow on web instead.
+if (Platform.OS !== 'web') {
+  GoogleSignin.configure({
+    webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
+  });
+}
 
 export function subscribeToAuthChanges(callback: (user: User | null) => void) {
   return onAuthStateChanged(auth, callback);
@@ -25,6 +31,10 @@ export function subscribeToAuthChanges(callback: (user: User | null) => void) {
 // TODO: Apple Sign-In is required before App Store submission (App Store
 // Review Guideline 4.8, since Google Sign-In is offered) -- not built yet.
 export async function signInWithGoogle() {
+  if (Platform.OS === 'web') {
+    await signInWithPopup(auth, new GoogleAuthProvider());
+    return;
+  }
   await GoogleSignin.hasPlayServices();
   const response = await GoogleSignin.signIn();
   if (response.type !== 'success' || !response.data.idToken) {
@@ -98,10 +108,12 @@ export async function signOut() {
   // Best-effort: clears the native Google session cache if there was one.
   // Must not block the Firebase sign-out below for users who never signed
   // in with Google in the first place (e.g. email/password users).
-  try {
-    await GoogleSignin.signOut();
-  } catch {
-    // ignore -- no Google session to clear
+  if (Platform.OS !== 'web') {
+    try {
+      await GoogleSignin.signOut();
+    } catch {
+      // ignore -- no Google session to clear
+    }
   }
   await firebaseSignOut(auth);
 }

@@ -66,7 +66,11 @@ export default function LoginScreen() {
   return (
     <SafeAreaView edges={['top', 'bottom']} className="flex-1 bg-white">
       <View className="flex-1 items-center justify-center gap-4 px-6">
-        <Image source={require('../../assets/icon.png')} className="h-24 w-24 rounded-3xl" resizeMode="cover" />
+        <Image
+          source={require('../../assets/icon.png')}
+          style={{ width: 96, height: 96, borderRadius: 24 }}
+          resizeMode="cover"
+        />
         <Text className="text-2xl font-bold text-slate-900">HouseMates</Text>
         <Text className="text-center text-slate-500">Sign in to see what your house needs.</Text>
 
