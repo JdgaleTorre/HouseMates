@@ -8,7 +8,19 @@
       "distribution": "internal"
     },
     "preview": {
-      "distribution": "internal"
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_FIREBASE_API_KEY": "AIzaSyDPGLQm7BqGcjeKqkhFEZyi5xQScJVTAwc",
+        "EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN": "housemates-prod.firebaseapp.com",
+        "EXPO_PUBLIC_FIREBASE_PROJECT_ID": "housemates-prod",
+        "EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET": "housemates-prod.firebasestorage.app",
+        "EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID": "491238862483",
+        "EXPO_PUBLIC_FIREBASE_APP_ID": "1:491238862483:web:490383b3809bc7f0082766",
+        "EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID":"491238862483-eevpiud6tnvl0ed2lp1nmdt2fr63k0lv.apps.googleusercontent.com"
+      }
     },
     "production": {}
   },

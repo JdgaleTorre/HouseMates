@@ -1,0 +1,42 @@
+name: Build Android APK
+
+on:
+  push:
+    tags: ['v*']
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+
+      - name: Build Android APK on EAS
+        id: eas_build
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: |
+          npx eas-cli build --platform android --profile preview --non-interactive --wait --json > eas-build-result.json
+          cat eas-build-result.json
+          ARTIFACT_URL=$(node -e "console.log(JSON.parse(require('fs').readFileSync('eas-build-result.json'))[0].artifacts.buildUrl)")
+          echo "artifact_url=$ARTIFACT_URL" >> "$GITHUB_OUTPUT"
+
+      - name: Download APK
+        run: curl -L -o app.apk "${{ steps.eas_build.outputs.artifact_url }}"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: app-apk
+          path: app.apk
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: app.apk
