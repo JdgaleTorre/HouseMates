@@ -1,6 +1,7 @@
 {
   "projects": {
-    "staging": "housemates-7ac22"
+    "staging": "housemates-7ac22",
+    "production": "housemates-prod"
   },
   "targets": {},
   "etags": {}
