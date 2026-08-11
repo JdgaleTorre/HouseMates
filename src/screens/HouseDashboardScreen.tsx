@@ -65,7 +65,7 @@ export default function HouseDashboardScreen({ route, navigation }: Props) {
             onPress={() => navigation.navigate('Members', { houseId })}
           />
           <MenuRow
-            label="Sections"
+            label="Chores"
             icon="grid-outline"
             onPress={() => navigation.navigate('Sections', { houseId })}
           />

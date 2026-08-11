@@ -27,7 +27,7 @@ export default function CleaningScreen({ route, navigation }: Props) {
       <View className="flex-1 px-6 pt-4">
         {sections.length === 0 ? (
           <View className="flex-1 items-center justify-center">
-            <Text className="text-center text-slate-500">No sections yet — add one under Sections first.</Text>
+            <Text className="text-center text-slate-500">No chores yet — add one under Chores first.</Text>
           </View>
         ) : (
           <FlatList

@@ -28,12 +28,12 @@ export default function SectionsScreen({ route }: Props) {
   return (
     <SafeAreaView edges={['bottom']} className="flex-1 bg-white">
       <View className="flex-1 gap-4 px-6 pt-4">
-        <AddItemInput onSubmit={handleAddSection} placeholder="Add a section (e.g. Living Room)" />
+        <AddItemInput onSubmit={handleAddSection} placeholder="Add a chore (e.g. Take out Bins)" />
         {loading ? (
           <ActivityIndicator />
         ) : sections.length === 0 ? (
           <View className="flex-1 items-center justify-center">
-            <Text className="text-slate-500">No sections yet.</Text>
+            <Text className="text-slate-500">No chores yet.</Text>
           </View>
         ) : (
           <FlatList

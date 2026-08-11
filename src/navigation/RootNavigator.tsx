@@ -47,7 +47,7 @@ export default function RootNavigator() {
             <Stack.Screen name="HouseDashboard" component={HouseDashboardScreen} />
             <Stack.Screen name="NeedsList" component={NeedsListScreen} options={{ title: 'Needs list' }} />
             <Stack.Screen name="Members" component={MembersScreen} options={{ title: 'Members' }} />
-            <Stack.Screen name="Sections" component={SectionsScreen} options={{ title: 'Sections' }} />
+            <Stack.Screen name="Sections" component={SectionsScreen} options={{ title: 'Chores' }} />
             <Stack.Screen name="Cleaning" component={CleaningScreen} options={{ title: 'Cleaning' }} />
             <Stack.Screen
               name="CleaningConfig"
