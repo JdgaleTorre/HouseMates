@@ -31,11 +31,12 @@ export interface NeedsItem {
   urgent: boolean;
 }
 
-export type CleaningFrequency = 'weekly' | 'biweekly' | 'monthly';
+export type CleaningFrequency = 'weekly' | 'biweekly' | 'monthly' | 'custom';
 
 export interface CleaningSchedule {
   assignedMemberIds: string[];
   frequency: CleaningFrequency;
+  customDays?: number;
   anchorAt: number;
   turnIndex?: number;
   lastCompletedAt?: number | null;

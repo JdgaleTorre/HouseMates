@@ -1,16 +1,29 @@
 import { CleaningFrequency, CleaningSchedule } from '../types';
 
-export const FREQUENCY_DAYS: Record<CleaningFrequency, number> = {
+export const FREQUENCY_DAYS: Record<Exclude<CleaningFrequency, 'custom'>, number> = {
   weekly: 7,
   biweekly: 14,
   monthly: 30,
 };
 
-export const FREQUENCY_LABELS: Record<CleaningFrequency, string> = {
+export const FREQUENCY_LABELS: Record<Exclude<CleaningFrequency, 'custom'>, string> = {
   weekly: 'Weekly',
   biweekly: 'Biweekly',
   monthly: 'Monthly',
 };
+
+export function getFrequencyDays(schedule: CleaningSchedule): number {
+  if (schedule.frequency === 'custom') return Math.max(1, schedule.customDays ?? 1);
+  return FREQUENCY_DAYS[schedule.frequency];
+}
+
+export function getFrequencyLabel(schedule: CleaningSchedule): string {
+  if (schedule.frequency === 'custom') {
+    const days = Math.max(1, schedule.customDays ?? 1);
+    return `Every ${days} day${days === 1 ? '' : 's'}`;
+  }
+  return FREQUENCY_LABELS[schedule.frequency];
+}
 
 function normalizeTurnIndex(n: number, turnIndex: number | undefined) {
   if (n <= 0) return 0;
@@ -30,7 +43,7 @@ export function getNextAssignee(schedule: CleaningSchedule): string | null {
 }
 
 export function getDueAt(schedule: CleaningSchedule): number {
-  const periodLengthMs = FREQUENCY_DAYS[schedule.frequency] * 24 * 60 * 60 * 1000;
+  const periodLengthMs = getFrequencyDays(schedule) * 24 * 60 * 60 * 1000;
   return (schedule.lastCompletedAt ?? schedule.anchorAt) + periodLengthMs;
 }
 
