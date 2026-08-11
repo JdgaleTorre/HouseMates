@@ -54,13 +54,24 @@ export default function CleaningConfigScreen({ route, navigation }: Props) {
     });
   }
 
+  function sameAssignees(a: string[], b: string[]) {
+    if (a.length !== b.length) return false;
+    const setB = new Set(b);
+    return a.every((uid) => setB.has(uid));
+  }
+
   function handleSave() {
     if (!house || !section || selected.size === 0) return;
     const assignedMemberIds = house.memberIds.filter((uid) => selected.has(uid));
+    const prev = section.cleaning;
+    const unchanged = !!prev && sameAssignees(prev.assignedMemberIds, assignedMemberIds);
     const schedule: CleaningSchedule = {
       assignedMemberIds,
       frequency,
-      anchorAt: section.cleaning?.anchorAt ?? Date.now(),
+      anchorAt: prev?.anchorAt ?? Date.now(),
+      turnIndex: unchanged ? (prev?.turnIndex ?? 0) : 0,
+      lastCompletedAt: unchanged ? (prev?.lastCompletedAt ?? null) : null,
+      lastCompletedBy: unchanged ? (prev?.lastCompletedBy ?? null) : null,
     };
     setCleaningSchedule(houseId, sectionId, schedule).then(() => navigation.goBack());
   }

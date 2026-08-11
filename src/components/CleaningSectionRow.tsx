@@ -2,7 +2,7 @@ import { Pressable, Text, View } from 'react-native';
 
 import MemberAvatar from './MemberAvatar';
 import { MemberProfile, Section } from '../types';
-import { FREQUENCY_LABELS, getAssigneeForPeriod } from '../utils/cleaningRotation';
+import { FREQUENCY_LABELS, getCurrentAssignee, getNextAssignee } from '../utils/cleaningRotation';
 
 interface CleaningSectionRowProps {
   section: Section;
@@ -33,10 +33,10 @@ export default function CleaningSectionRow({ section, memberProfiles, onPress }:
           </View>
           <Text className="text-xs text-slate-500">{FREQUENCY_LABELS[cleaning.frequency]}</Text>
           <Text className="text-sm text-slate-700">
-            Up now: <Text className="font-semibold">{nameFor(getAssigneeForPeriod(cleaning, 0), memberProfiles)}</Text>
+            Up now: <Text className="font-semibold">{nameFor(getCurrentAssignee(cleaning), memberProfiles)}</Text>
           </Text>
           <Text className="text-sm text-slate-500">
-            Up next: {nameFor(getAssigneeForPeriod(cleaning, 1), memberProfiles)}
+            Up next: {nameFor(getNextAssignee(cleaning), memberProfiles)}
           </Text>
         </>
       ) : null}

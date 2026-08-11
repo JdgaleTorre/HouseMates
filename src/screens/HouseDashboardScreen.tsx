@@ -47,7 +47,12 @@ export default function HouseDashboardScreen({ route, navigation }: Props) {
     <SafeAreaView edges={['bottom']} className="flex-1 bg-white">
       <View className="flex-1 gap-4 px-6 pt-4">
         <InviteCodeBanner houseName={house.name} inviteCode={house.inviteCode} />
-        <MyCleaningSummary sections={sections} userUid={user.uid} />
+        <MyCleaningSummary
+          sections={sections}
+          userUid={user.uid}
+          houseId={houseId}
+          memberProfiles={house.memberProfiles}
+        />
         <View className="gap-3">
           <MenuRow
             label="Needs List"

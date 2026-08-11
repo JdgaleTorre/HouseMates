@@ -37,6 +37,9 @@ export interface CleaningSchedule {
   assignedMemberIds: string[];
   frequency: CleaningFrequency;
   anchorAt: number;
+  turnIndex?: number;
+  lastCompletedAt?: number | null;
+  lastCompletedBy?: string | null;
 }
 
 export interface Section {
