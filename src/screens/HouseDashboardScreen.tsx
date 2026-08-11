@@ -1,9 +1,10 @@
+import { Ionicons } from '@expo/vector-icons';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { useEffect } from 'react';
-import { ActivityIndicator, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import { ActivityIndicator, Pressable, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import InviteCodeBanner from '../components/InviteCodeBanner';
+import InviteMenu from '../components/InviteMenu';
 import MenuRow from '../components/MenuRow';
 import MyCleaningSummary from '../components/MyCleaningSummary';
 import { useAuth } from '../context/AuthContext';
@@ -19,10 +20,18 @@ export default function HouseDashboardScreen({ route, navigation }: Props) {
   const { user } = useAuth();
   const { house, loading } = useHouse(houseId);
   const { sections } = useSections(houseId);
+  const [inviteMenuVisible, setInviteMenuVisible] = useState(false);
 
   useEffect(() => {
     if (house) {
-      navigation.setOptions({ title: house.name });
+      navigation.setOptions({
+        title: house.name,
+        headerRight: () => (
+          <Pressable onPress={() => setInviteMenuVisible(true)} hitSlop={8} className="pr-1">
+            <Ionicons name="share-outline" size={22} color="#2563eb" />
+          </Pressable>
+        ),
+      });
     }
   }, [navigation, house]);
 
@@ -46,7 +55,6 @@ export default function HouseDashboardScreen({ route, navigation }: Props) {
   return (
     <SafeAreaView edges={['bottom']} className="flex-1 bg-white">
       <View className="flex-1 gap-4 px-6 pt-4">
-        <InviteCodeBanner houseName={house.name} inviteCode={house.inviteCode} />
         <MyCleaningSummary
           sections={sections}
           userUid={user.uid}
@@ -76,6 +84,13 @@ export default function HouseDashboardScreen({ route, navigation }: Props) {
           />
         </View>
       </View>
+
+      <InviteMenu
+        visible={inviteMenuVisible}
+        onClose={() => setInviteMenuVisible(false)}
+        houseName={house.name}
+        inviteCode={house.inviteCode}
+      />
     </SafeAreaView>
   );
 }
