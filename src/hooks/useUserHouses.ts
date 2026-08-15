@@ -27,6 +27,7 @@ export function useUserHouses(uid: string | null) {
           memberIds: data.memberIds ?? [],
           memberProfiles: data.memberProfiles ?? {},
           createdAt: data.createdAt?.toMillis?.() ?? 0,
+          lastReadMessagesAt: data.lastReadMessagesAt ?? {},
         };
       });
       next.sort((a, b) => a.createdAt - b.createdAt);

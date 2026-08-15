@@ -83,3 +83,9 @@ export function refreshMemberProfile(houseId: string, uid: string, profile: Memb
     [`memberProfiles.${uid}`]: profile,
   });
 }
+
+export function markMessagesRead(houseId: string, uid: string) {
+  return updateDoc(doc(db, 'houses', houseId), {
+    [`lastReadMessagesAt.${uid}`]: Date.now(),
+  });
+}

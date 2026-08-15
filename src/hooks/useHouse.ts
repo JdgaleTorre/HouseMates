@@ -30,6 +30,7 @@ export function useHouse(houseId: string | null) {
         memberIds: data.memberIds ?? [],
         memberProfiles: data.memberProfiles ?? {},
         createdAt: data.createdAt?.toMillis?.() ?? 0,
+        lastReadMessagesAt: data.lastReadMessagesAt ?? {},
       });
       setLoading(false);
     });

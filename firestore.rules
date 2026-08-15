@@ -33,6 +33,13 @@ service cloud.firestore {
             && resource.data.memberIds.hasAll(request.resource.data.memberIds))
         );
 
+      // Any member may update lastReadMessagesAt (which entries change is
+      // not deeply validated -- same trust level items already give
+      // createdByName).
+      allow update: if request.auth != null
+        && request.auth.uid in resource.data.memberIds
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['lastReadMessagesAt']);
+
       match /items/{itemId} {
         allow read, create, delete: if request.auth != null
           && request.auth.uid in get(/databases/$(database)/documents/houses/$(houseId)).data.memberIds;
@@ -43,6 +50,18 @@ service cloud.firestore {
         allow update: if request.auth != null
           && request.auth.uid in get(/databases/$(database)/documents/houses/$(houseId)).data.memberIds
           && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['bought', 'urgent']);
+      }
+
+      match /messages/{messageId} {
+        allow read: if request.auth != null
+          && request.auth.uid in get(/databases/$(database)/documents/houses/$(houseId)).data.memberIds;
+
+        allow create: if request.auth != null
+          && request.auth.uid in get(/databases/$(database)/documents/houses/$(houseId)).data.memberIds
+          && request.resource.data.createdBy == request.auth.uid
+          && request.resource.data.text is string
+          && request.resource.data.text.size() > 0
+          && request.resource.data.text.size() <= 255;
       }
 
       match /sections/{sectionId} {

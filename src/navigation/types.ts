@@ -6,6 +6,7 @@ export type RootStackParamList = {
   JoinHouse: undefined;
   HouseDashboard: { houseId: string };
   NeedsList: { houseId: string };
+  Messages: { houseId: string };
   Members: { houseId: string };
   Sections: { houseId: string };
   Cleaning: { houseId: string };

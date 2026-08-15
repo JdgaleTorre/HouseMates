@@ -12,6 +12,7 @@ import HousesScreen from '../screens/HousesScreen';
 import JoinHouseScreen from '../screens/JoinHouseScreen';
 import LoginScreen from '../screens/LoginScreen';
 import MembersScreen from '../screens/MembersScreen';
+import MessagesScreen from '../screens/MessagesScreen';
 import NeedsListScreen from '../screens/NeedsListScreen';
 import SectionsScreen from '../screens/SectionsScreen';
 import { RootStackParamList } from './types';
@@ -46,6 +47,7 @@ export default function RootNavigator() {
             <Stack.Screen name="JoinHouse" component={JoinHouseScreen} options={{ title: 'Join house' }} />
             <Stack.Screen name="HouseDashboard" component={HouseDashboardScreen} />
             <Stack.Screen name="NeedsList" component={NeedsListScreen} options={{ title: 'Needs list' }} />
+            <Stack.Screen name="Messages" component={MessagesScreen} options={{ title: 'Messages' }} />
             <Stack.Screen name="Members" component={MembersScreen} options={{ title: 'Members' }} />
             <Stack.Screen name="Sections" component={SectionsScreen} options={{ title: 'Chores' }} />
             <Stack.Screen name="Cleaning" component={CleaningScreen} options={{ title: 'Cleaning' }} />

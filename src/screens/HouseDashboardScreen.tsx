@@ -11,6 +11,7 @@ import { useAuth } from '../context/AuthContext';
 import { refreshMemberProfile } from '../firebase/houses';
 import { useHouse } from '../hooks/useHouse';
 import { useSections } from '../hooks/useSections';
+import { useUnreadMessages } from '../hooks/useUnreadMessages';
 import { RootStackParamList } from '../navigation/types';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'HouseDashboard'>;
@@ -21,6 +22,8 @@ export default function HouseDashboardScreen({ route, navigation }: Props) {
   const { house, loading } = useHouse(houseId);
   const { sections } = useSections(houseId);
   const [inviteMenuVisible, setInviteMenuVisible] = useState(false);
+  const lastReadMessagesAt = user ? (house?.lastReadMessagesAt[user.uid] ?? 0) : 0;
+  const hasUnreadMessages = useUnreadMessages(houseId, lastReadMessagesAt);
 
   useEffect(() => {
     if (house) {
@@ -66,6 +69,12 @@ export default function HouseDashboardScreen({ route, navigation }: Props) {
             label="Needs List"
             icon="cart-outline"
             onPress={() => navigation.navigate('NeedsList', { houseId })}
+          />
+          <MenuRow
+            label="Messages"
+            icon="chatbubble-outline"
+            showBadge={hasUnreadMessages}
+            onPress={() => navigation.navigate('Messages', { houseId })}
           />
           <MenuRow
             label="Members"

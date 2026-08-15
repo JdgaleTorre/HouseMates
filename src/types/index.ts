@@ -19,6 +19,7 @@ export interface House {
   memberIds: string[];
   memberProfiles: Record<string, MemberProfile>;
   createdAt: number;
+  lastReadMessagesAt: Record<string, number>;
 }
 
 export interface NeedsItem {
@@ -29,6 +30,14 @@ export interface NeedsItem {
   createdAt: number;
   bought: boolean;
   urgent: boolean;
+}
+
+export interface Message {
+  id: string;
+  text: string;
+  createdBy: string;
+  createdByName: string;
+  createdAt: number;
 }
 
 export type CleaningFrequency = 'weekly' | 'biweekly' | 'monthly' | 'custom';
