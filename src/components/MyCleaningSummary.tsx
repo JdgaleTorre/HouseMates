@@ -50,7 +50,7 @@ export default function MyCleaningSummary({ sections, userUid, houseId, memberPr
                 className="items-center gap-1"
                 style={{ width: 88 }}
               >
-                <CircularProgress progress={getProgress(cleaning)} color={overdue ? '#dc2626' : '#16a34a'}>
+                <CircularProgress progress={1 - getProgress(cleaning)} color={overdue ? '#dc2626' : '#16a34a'}>
                   <Text className="text-base font-bold text-slate-900">{getSectionInitials(section.name)}</Text>
                 </CircularProgress>
                 <Text className="text-center text-xs font-semibold text-blue-900" numberOfLines={1}>
