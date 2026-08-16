@@ -36,6 +36,7 @@ export default function MessagesScreen({ route }: Props) {
   function handleAddMessage(text: string) {
     if (!user) return;
     addMessage(houseId, text, user.uid, user.displayName ?? 'A roommate');
+    markMessagesRead(houseId, user.uid);
   }
 
   return (
