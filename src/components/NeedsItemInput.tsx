@@ -26,21 +26,21 @@ export default function NeedsItemInput({ onSubmit }: NeedsItemInputProps) {
         placeholder="What does the house need?"
         onSubmitEditing={handleSubmit}
         returnKeyType="done"
-        className="flex-1 rounded-xl border border-slate-300 px-4 py-3 text-base"
+        className="h-12 min-w-0 flex-1 rounded-xl border border-slate-300 px-4 text-base"
       />
       <Pressable
         onPress={() => setUrgent((u) => !u)}
         hitSlop={8}
-        className={`rounded-xl border px-3 py-3 ${urgent ? 'border-red-500 bg-red-50' : 'border-slate-300 bg-white'}`}
+        className={`h-12 w-12 items-center justify-center rounded-xl border ${urgent ? 'border-red-500 bg-red-50' : 'border-slate-300 bg-white'}`}
       >
         <Ionicons name={urgent ? 'flag' : 'flag-outline'} size={20} color={urgent ? '#ef4444' : '#94a3b8'} />
       </Pressable>
       <Pressable
         onPress={handleSubmit}
         disabled={!name.trim()}
-        className={`rounded-xl bg-blue-600 px-4 py-3 ${!name.trim() ? 'opacity-50' : ''}`}
+        className={`h-12 items-center justify-center rounded-xl border border-blue-600 bg-blue-600 px-4 ${!name.trim() ? 'opacity-50' : ''}`}
       >
-        <Text className="font-semibold text-white">Add</Text>
+        <Text className="text-base font-semibold text-white">Add</Text>
       </Pressable>
     </View>
   );
