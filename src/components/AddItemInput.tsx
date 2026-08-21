@@ -24,14 +24,14 @@ export default function AddItemInput({ onSubmit, placeholder = 'What does the ho
         placeholder={placeholder}
         onSubmitEditing={handleSubmit}
         returnKeyType="done"
-        className="flex-1 rounded-xl border border-slate-300 px-4 py-3 text-base"
+        className="h-12 min-w-0 flex-1 rounded-xl border border-slate-300 px-4 text-base"
       />
       <Pressable
         onPress={handleSubmit}
         disabled={!name.trim()}
-        className={`rounded-xl bg-blue-600 px-4 py-3 ${!name.trim() ? 'opacity-50' : ''}`}
+        className={`h-12 items-center justify-center rounded-xl border border-blue-600 bg-blue-600 px-4 ${!name.trim() ? 'opacity-50' : ''}`}
       >
-        <Text className="font-semibold text-white">Add</Text>
+        <Text className="text-base font-semibold text-white">Add</Text>
       </Pressable>
     </View>
   );
