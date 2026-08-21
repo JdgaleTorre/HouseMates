@@ -1,4 +1,4 @@
-import { NavigationContainer } from '@react-navigation/native';
+import { LinkingOptions, NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { ActivityIndicator, View } from 'react-native';
 
@@ -19,6 +19,31 @@ import { RootStackParamList } from './types';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
+// Syncs navigation state to the browser's History API (web only, since no
+// `scheme` is registered in app.json for native deep linking). Without this,
+// screen navigations never push browser history entries, so the Android PWA
+// back gesture has nothing to pop through and exits the app instead of going
+// back a screen.
+const linking: LinkingOptions<RootStackParamList> = {
+  prefixes: [],
+  config: {
+    screens: {
+      Login: 'login',
+      Houses: '',
+      EditProfile: 'profile',
+      CreateHouse: 'houses/new',
+      JoinHouse: 'houses/join',
+      HouseDashboard: 'houses/:houseId',
+      NeedsList: 'houses/:houseId/needs',
+      Messages: 'houses/:houseId/messages',
+      Members: 'houses/:houseId/members',
+      Sections: 'houses/:houseId/sections',
+      Cleaning: 'houses/:houseId/cleaning',
+      CleaningConfig: 'houses/:houseId/cleaning/:sectionId',
+    },
+  },
+};
+
 function LoadingScreen() {
   return (
     <View className="flex-1 items-center justify-center bg-white">
@@ -35,7 +60,7 @@ export default function RootNavigator() {
   }
 
   return (
-    <NavigationContainer>
+    <NavigationContainer linking={linking}>
       <Stack.Navigator screenOptions={{ title: 'HouseMates' }}>
         {!user ? (
           <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
